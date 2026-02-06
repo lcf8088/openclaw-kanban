@@ -904,3 +904,30 @@ input, select, textarea {
     max-width: 95%;
   }
 }
+.active-badge { background: #22c55e; color: white; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: 600; margin-right: 8px; animation: pulse 2s infinite; } @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+
+/* Professional cyan glow for active tasks */
+
+
+/* Hide the badge - glow is enough */
+.active-badge { display: none !important; }
+
+/* Stronger pulse effect */
+
+.active-badge { display: none !important; }
+
+@keyframes active-pulse {
+  0%, 100% {
+    box-shadow: 0 0 8px rgba(6, 182, 212, 0.4), 0 0 16px rgba(6, 182, 212, 0.2);
+    border-color: #06b6d4;
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(6, 182, 212, 0.8), 0 0 40px rgba(6, 182, 212, 0.5), 0 0 60px rgba(6, 182, 212, 0.3);
+    border-color: #67e8f9;
+  }
+}
+
+.task-card.active-now {
+  border: 2px solid #06b6d4;
+  animation: active-pulse 3.5s ease-in-out infinite;
+}

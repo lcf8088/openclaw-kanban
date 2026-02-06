@@ -49,6 +49,13 @@
     return `${years}y ago`;
   }
 
+  function isActiveNow(task) {
+    const lastUpdate = new Date(task.updated_at);
+    const now = new Date();
+    const minutesAgo = (now - lastUpdate) / 1000 / 60;
+    return minutesAgo < 2;
+  }
+
   function debounce(func, wait) {
     let timeout;
     return function(...args) {
@@ -66,7 +73,7 @@
   // ============================================================================
 
   const api = {
-    baseUrl: 'http://localhost:3000/api',
+    baseUrl: '/api',
 
     async getTasks(filters = {}) {
       try {
@@ -185,7 +192,7 @@
   // ============================================================================
 
   function connectWebSocket() {
-    const wsUrl = 'ws://localhost:3000';
+    const wsUrl = `ws://${window.location.host}`;
 
     try {
       state.ws = new WebSocket(wsUrl);
@@ -305,17 +312,19 @@
   }
 
   function renderCard(task) {
+    const isActive = isActiveNow(task);
     const tags = task.tags || [];
     const tagsHtml = tags.map(tag =>
       `<span class="tag">${escapeHtml(tag)}</span>`
     ).join('');
 
     return `
-      <div class="task-card"
+      <div class="task-card${isActive ? ' active-now' : ''}"
            draggable="true"
            data-task-id="${escapeHtml(task.id)}"
            data-priority="${escapeHtml(task.priority)}">
         <div class="card-header">
+          ${isActive ? '<span class="active-badge">⚡️ Active</span>' : ''}
           <span class="priority-badge priority-${escapeHtml(task.priority)}">
             ${escapeHtml(task.priority)}
           </span>

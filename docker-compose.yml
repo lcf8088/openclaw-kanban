@@ -1,0 +1,51 @@
+version: "3.8"
+
+services:
+  kanban:
+    build: .
+    container_name: openclaw-kanban
+    restart: unless-stopped
+    ports:
+      - "${KANBAN_PORT:-3000}:3000"
+    volumes:
+      # Persist task data across container restarts
+      - kanban-data:/app/data
+    environment:
+      - NODE_ENV=production
+    networks:
+      - openclaw-net
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/api/stats"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  # Uncomment and configure if running OpenClaw alongside
+  # openclaw:
+  #   image: openclaw/openclaw:latest
+  #   container_name: openclaw
+  #   restart: unless-stopped
+  #   volumes:
+  #     - ./openclaw-workspace:/app/workspace
+  #     - openclaw-data:/app/data
+  #   environment:
+  #     - KANBAN_URL=http://kanban:3000
+  #     # Add your OpenClaw env vars here:
+  #     # - ANTHROPIC_API_KEY=your-key
+  #     # - WHATSAPP_TOKEN=your-token
+  #   networks:
+  #     - openclaw-net
+  #   depends_on:
+  #     kanban:
+  #       condition: service_healthy
+
+volumes:
+  kanban-data:
+    driver: local
+  # openclaw-data:
+  #   driver: local
+
+networks:
+  openclaw-net:
+    driver: bridge
